@@ -1,5 +1,9 @@
 # s3 tree
 
+#' Construct an empty `Tree`
+#'
+#' @export
+#'
 tree <- function() {
   structure(
     list(
@@ -9,26 +13,68 @@ tree <- function() {
   )
 }
 
+#' Obtain the `Node`s that are stored in a `Tree`
+#'
+#' @param        x             A `Tree` object.
+#' @param        ...           Other arguments - unused at present.
+#'
+#' @export
+#'
 nodes <- function(x, ...) {
   UseMethod("nodes")
 }
 
+#' Obtain the `Node`s that are stored in a `Tree`
+#'
+#' @param        x             A `Tree` object.
+#' @param        ...           Other arguments - unused at present.
+#'
+#' @export
+#'
 nodes.Tree <- function(x, ...) {
   x$nodes
 }
 
+#' Returns true for Trees that don't contain `Node`s
+#'
+#' @param        x             A `Tree` object.
+#' @param        ...           Other arguments - unused at present.
+#'
+#' @export
+#'
 is_empty <- function(x, ...) {
   UseMethod("is_empty")
 }
-
+#' Returns true for Trees that don't contain `Node`s
+#'
+#' @param        x             A `Tree` object.
+#' @param        ...           Other arguments - unused at present.
+#'
+#' @export
+#'
 is_empty.Tree <- function(x, ...) {
   length(nodes(x)) == 0
 }
 
+#' Add a `Node` to a `Tree`
+#'
+#' @param        x             Some `Tree`.
+#' @param        ...           Further arguments - unused at present.
+#'
+#' @export
+#'
 add_node <- function(x, ...) {
   UseMethod("add_node")
 }
 
+#' Add a `Node` to a `Tree`
+#'
+#' @param        x             Some `Tree`.
+#' @param        node          Some `Node` to be added to the `Tree`.
+#' @param        ...           Further arguments - unused at present.
+#'
+#' @export
+#'
 add_node.Tree <- function(x, node, ...) {
   c_if <- function(input, test, value) {
     if (test) {
@@ -69,12 +115,24 @@ add_node.Tree <- function(x, node, ...) {
   x
 }
 
-# .x is the tree
-# .f is applied to each of it's nodes
-# if .field a string, the result will be appended/updated to that field of the
-#   node, otherwise, a named list of results will be passed back
-# if .f has an argument `tree`, the whole of the tree is passed into the
-#   function
+#' Map a function over the `Node`s in a `Tree`
+#'
+#'
+#' @param        .x            The `Tree`
+#' @param        .f            The function to be applied to the `Node`s in the
+#'   `Tree`. If .f has an argument called `tree` then `map_tree` will pass the
+#'   `Tree` `.x` in as that argument automatically.
+#' @param        .field        If a string is provided, the values of `.f` will
+#'   be appended to the respective `Node`s in the `Tree`; .field gives the name
+#'   of the field where this result is stored. If .field is NULL (as default)
+#'   a named list of the results will be returned (names being the name of the
+#'   relevant `Node`).
+#' @param        ...           Further arguments to be passed into the function
+#'   `.f`. Except: if the function `.f` takes an argument `tree`, then `.x` is
+#'   passed in as the `tree` argument automatically.
+#'
+#' @export
+#'
 map_tree <- function(.x, .f, ..., .field = NULL) {
   values <- if ("tree" %in% methods::formalArgs(.f)){
     purrr::map(nodes(.x), .f, tree = .x, ...)

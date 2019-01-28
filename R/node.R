@@ -1,10 +1,27 @@
 # ---- node (branch or leaf) in an `s3_tree`
 
+#' Convert a `list` into a `Node`
+#'
+#' @param        x             A list of data. This must contain entries named
+#'   `name`, `parent` and `children`.
+#'
+#' @export
+#'
 as_node <- function(x) {
   stopifnot(all(c("name", "parent", "children") %in% names(x)))
   structure(x, class = "Node")
 }
 
+#' Construct a `Node`
+#'
+#' @param        name          Name of the `Node`
+#' @param        parent        Name of the (lone) parent of the `Node`
+#' @param        children      Names of any children of the `Node`
+#' @param        ...           Any other fields of data for storing with the
+#'   `Node`. Provided as key=value pairs.
+#'
+#' @export
+#'
 node <- function(name = "root", parent = NULL, children = NULL, ...) {
   stopifnot(length(name) == 1)
   stopifnot(length(parent) <= 1)
@@ -45,10 +62,18 @@ has_parent.Node <- function(x, ...) {
   length(parent_name(x)) == 1
 }
 
+#' Extract the names of the children of a `Node`
+#' @param        x             A `Node`
+#' @param        ...           Other arguments - unused at present.
+#' @export
 children <- function(x, ...) {
   UseMethod("children")
 }
 
+#' Extract the names of the children of a `Node`
+#' @param        x             A `Node`
+#' @param        ...           Other arguments - unused at present.
+#' @export
 children.Node <- function(x, ...) {
   x$children
 }
