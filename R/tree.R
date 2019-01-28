@@ -68,3 +68,28 @@ add_node.Tree <- function(x, node, ...) {
   x$nodes <- append(nodes(x), stats::setNames(list(node), node$name))
   x
 }
+
+# .x is the tree
+# .f is applied to each of it's nodes
+# if .field a string, the result will be appended/updated to that field of the
+#   node, otherwise, a named list of results will be passed back
+# if .f has an argument `tree`, the whole of the tree is passed into the
+#   function
+map_tree <- function(.x, .f, ..., .field = NULL) {
+  values <- if ("tree" %in% methods::formalArgs(.f)){
+    purrr::map(nodes(.x), .f, tree = .x, ...)
+  } else {
+    purrr::map(nodes(.x), .f, ...)
+  }
+
+  if (is.null(.field)) {
+    values
+  } else {
+    new_nodes <- purrr::map2(nodes(.x), values, function(x, y) {
+      args <- stats::setNames(list(x, y), c("x", .field))
+      do.call(update_node, args)
+    })
+    .x$nodes <- new_nodes
+    .x
+  }
+}
