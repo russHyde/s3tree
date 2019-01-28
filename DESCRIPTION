@@ -13,5 +13,7 @@ Suggests:
     testthat
 Imports: 
     magrittr,
-    stats
+    stats,
+    purrr,
+    methods
 RoxygenNote: 6.1.1
