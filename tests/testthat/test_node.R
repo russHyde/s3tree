@@ -7,6 +7,33 @@ test_that("A `Node` can be constructed using `node()`", {
   expect_is(n, "Node")
 })
 
+test_that("A `Node` can be constructed from a list using `as_node()`", {
+  my_list <- list(name = "me", parent = NULL, children = NULL)
+  expect_is(
+    as_node(my_list), "Node",
+    info = "`as_node` converts a `list` to a `Node`."
+  )
+
+  expect_error(
+    as_node(list(no = "parent", or = "children", OR = "name")),
+    info = paste(
+      "`name` / `parent` / `children` entries are required to turn a `list`",
+      "into a `Node`."
+    )
+  )
+})
+
+test_that(".. it can be converted to a list", {
+  node_vals <- list(name = "abc", parent = "root", children = NULL)
+  node <- as_node(node_vals)
+
+  expect_equal(
+    object = as.list(node),
+    expected = node_vals,
+    info = "can convert `Node` to `list`"
+  )
+})
+
 ###############################################################################
 
 test_that(" .. it must have a `name`", {
@@ -119,7 +146,49 @@ test_that(".. it can acquire additional `children`", {
   )
 })
 
-# .. it can store additional fields
-# - user can set these fields using update_node(node, field = value)
+###############################################################################
 
-# .. but it cannot update `parent` or `children` using `update_node`
+test_that(".. it can store additional fields", {
+  n0 <- node()
+
+  expect_is(
+    update_node(n0, my_field = 123),
+    "Node",
+    info = "a `Node` is still a `Node` after modifying a field"
+  )
+  expect_equal(
+    update_node(n0), n0,
+    info = "fields should only be modified if passed in"
+  )
+  expect_equal(
+    update_node(n0, my_field = 123)$my_field, 123,
+    info = "add a field to a `Node`"
+  )
+  expect_equal(
+    object = n0 %>%
+      update_node(my_field = 123) %>%
+      update_node(my_field = 246) %>%
+      `[[`("my_field"),
+    expected = 246,
+    info = "modify an existing field on a `Node`"
+  )
+
+  expect_equal(
+    node(some_field = 123)$some_field, 123,
+    info = "additional fields can be passed into `node` constructor"
+  )
+})
+
+test_that(".. it must not use `update_node` to modify `parent` or `children`", {
+  n0 <- node()
+
+  expect_error(
+    object = update_node(n0, children = letters[1:3]),
+    info = "can't update children of a `Node` using `update_node`"
+  )
+
+  expect_error(
+    object = update_node(n0, parent = "some_node"),
+    info = "can't update parent of a `Node` using `update_node`"
+  )
+})

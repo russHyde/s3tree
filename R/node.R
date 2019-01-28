@@ -1,22 +1,38 @@
 # ---- node (branch or leaf) in an `s3_tree`
 
-node <- function(name = "root", parent = NULL, children = NULL) {
+as_node <- function(x) {
+  stopifnot(all(c("name", "parent", "children") %in% names(x)))
+  structure(x, class = "Node")
+}
+
+node <- function(name = "root", parent = NULL, children = NULL, ...) {
   stopifnot(length(name) == 1)
   stopifnot(length(parent) <= 1)
-  structure(
-    list(
-      name = name,
-      parent = parent,
-      children = children
-    ),
-    class = "Node"
+  as_node(
+    append(
+      list(name = name, parent = parent, children = children),
+      list(...)
+    )
   )
 }
 
+as.list.Node <- function(x, ...) {
+  attr(x, "class") <- NULL
+  x
+}
+
+#' parent_name of a node
+#' @param        x             a node.
+#' @param        ...           further args - not currently used.
+#' @export
 parent_name <- function(x, ...) {
   UseMethod("parent_name")
 }
 
+#' parent_name of a node
+#' @param        x             a node.
+#' @param        ...           further args - not currently used.
+#' @export
 parent_name.Node <- function(x, ...) {
   x$parent
 }
@@ -46,4 +62,20 @@ append_child.Node <- function(x, child, ...) {
     x$children <- c(x$children, child)
   }
   x
+}
+
+update_node <- function(x, ...) {
+  UseMethod("update_node")
+}
+
+update_node.Node <- function(x, ...) {
+  dots <- list(...)
+  if ("children" %in% names(dots)) {
+    stop("can't update `children` using `update_node`: see `add_child`")
+  }
+  if ("parent" %in% names(dots)) {
+    stop("can't update `parent` using `update_node`")
+  }
+
+  as_node(update_or_append(as.list(x), ...))
 }
