@@ -9,9 +9,12 @@ Description: More about what it does (maybe more than one line)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests: 
-    testthat
-Imports: 
+URL: https://github.com/russHyde/s3tree
+BugReports: https://github.com/russHyde/s3tree/issues
+Suggests:
+    testthat,
+    covr
+Imports:
     magrittr,
     stats,
     purrr,
