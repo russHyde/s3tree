@@ -56,6 +56,53 @@ is_empty.Tree <- function(x, ...) {
   length(nodes(x)) == 0
 }
 
+#' Get a `Node` using it's name from a `Tree`
+#'
+#' @param        x             A `Tree`
+#'
+#' @export
+#'
+get_node <- function(x, ...) {
+  UseMethod("get_node")
+}
+
+#' Get a `Node` using it's name from a `Tree`
+#'
+#' @param        x             A `Tree`
+#' @param        node_name     The name of a `Node` within the `Tree`.
+#'
+#' @export
+#'
+get_node.Tree <- function(x, node_name, ...) {
+  stopifnot(node_name %in% names(nodes(x)))
+  nodes(x)[[node_name]]
+}
+
+#' Obtain the `Node` that is the parent of a given `Node` in the `Tree`
+#'
+#' @param        x             A `Tree`.
+#' @param        ...           Other arguments.
+#'
+#' @export
+#'
+get_parent <- function(x, ...) {
+  UseMethod("get_parent")
+}
+
+#' Obtain the `Node` that is the parent of a given `Node` in the `Tree`
+#'
+#' @param        x             A `Tree`
+#' @param        node          A `Node` that has a parent within the `Tree`.
+#' @param        ...           Other arguments - currently unused.
+#'
+#' @export
+#'
+get_parent.Tree <- function(x, node, ...) {
+  stopifnot(node$name %in% names(nodes(x)))
+  stopifnot(has_parent(node))
+  get_node(x, parent_name(node))
+}
+
 #' Add a `Node` to a `Tree`
 #'
 #' @param        x             Some `Tree`.
@@ -108,36 +155,11 @@ add_node.Tree <- function(x, node, ...) {
   # update_parent
   if (has_parent(node)) {
     pname <- parent_name(node)
-    x$nodes[[pname]] <- append_child(nodes(x)[[pname]], child = node$name)
+    x$nodes[[pname]] <- append_child(get_node(x, pname), child = node$name)
   }
   # append new node
   x$nodes <- append(nodes(x), stats::setNames(list(node), node$name))
   x
-}
-
-#' Obtain the `Node` that is the parent of a given `Node` in the `Tree`
-#'
-#' @param        x             A `Tree`.
-#' @param        ...           Other arguments.
-#'
-#' @export
-#'
-get_parent <- function(x, ...) {
-  UseMethod("get_parent")
-}
-
-#' Obtain the `Node` that is the parent of a given `Node` in the `Tree`
-#'
-#' @param        x             A `Tree`
-#' @param        node          A `Node` that has a parent within the `Tree`.
-#' @param        ...           Other arguments - currently unused.
-#'
-#' @export
-#'
-get_parent.Tree <- function(x, node, ...) {
-  stopifnot(node$name %in% names(nodes(x)))
-  stopifnot(has_parent(node))
-  nodes(x)[[parent_name(node)]]
 }
 
 #' Map a function over the `Node`s in a `Tree`

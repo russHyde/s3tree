@@ -159,6 +159,23 @@ test_that(".. it's nodes can be mapped over", {
   )
 })
 
+test_that(".. it can extract a `Node` by name", {
+  t0 <- tree()
+  root <- node(name = "root")
+  t1 <- add_node(t0, root)
+
+  expect_error(
+    get_node(t0, "some_node"),
+    info = "`Node` must be present to be extracted using `get_node`"
+  )
+
+  expect_equal(
+    get_node(t1, "root"),
+    root,
+    info = "`Node` can be extracted by name if it is present"
+  )
+})
+
 test_that(".. it can extract the parent of a `Node`", {
   t0 <- tree()
   root <- node(name = "root")
