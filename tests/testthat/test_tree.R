@@ -158,3 +158,30 @@ test_that(".. it's nodes can be mapped over", {
     info = "map over nodes, using info that can't be got from the node alone"
   )
 })
+
+test_that(".. it can extract the parent of a `Node`", {
+  t0 <- tree()
+  root <- node(name = "root")
+  t1 <- add_node(t0, root)
+  child <- node(name = "a", parent = "root")
+  t2 <- add_node(t1, child)
+
+  # `Node` must be present in the `Tree`
+  expect_error(
+    get_parent(t0, node()),
+    info = "`Node` must be present in `Tree` to obtain it's parent `Node`"
+  )
+  # `Node` must have a parent in the `Tree` (user should use `has_parent()`
+  #   beforehand)
+  expect_error(
+    get_parent(t1, root),
+    info = "`Node` must have a parent in the `Tree`"
+  )
+
+  # `Node`s parent can be obtained as a `Node`
+  expect_equal(
+    get_parent(t2, child),
+    append_child(root, "a"),
+    info = "obtain the parent of a child `Node` from a `Tree`"
+  )
+})

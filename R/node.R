@@ -41,7 +41,9 @@ as.list.Node <- function(x, ...) {
 #' parent_name of a node
 #' @param        x             a node.
 #' @param        ...           further args - not currently used.
+#'
 #' @export
+#'
 parent_name <- function(x, ...) {
   UseMethod("parent_name")
 }
@@ -49,15 +51,29 @@ parent_name <- function(x, ...) {
 #' parent_name of a node
 #' @param        x             a node.
 #' @param        ...           further args - not currently used.
+#'
 #' @export
+#'
 parent_name.Node <- function(x, ...) {
   x$parent
 }
 
+#' Does this `Node` have a parent in the `Tree`?
+#' @param        x             a `Node`
+#' @param        ...           further args - not currently used.
+#'
+#' @export
+#'
 has_parent <- function(x, ...) {
   UseMethod("has_parent")
 }
 
+#' Does this `Node` have a parent in the `Tree`?
+#' @param        x             a `Node`
+#' @param        ...           further args - not currently used.
+#'
+#' @export
+#'
 has_parent.Node <- function(x, ...) {
   length(parent_name(x)) == 1
 }
@@ -89,10 +105,26 @@ append_child.Node <- function(x, child, ...) {
   x
 }
 
+#' Update the data that is attached to a `Node`
+#'
+#' @param        x             a `Node`
+#' @param        ...           a set of key=value pairs for appending as fields
+#'   to the current `Node`.
+#'
+#' @export
+#'
 update_node <- function(x, ...) {
   UseMethod("update_node")
 }
 
+#' Update the data that is attached to a `Node`
+#'
+#' @param        x             a `Node`
+#' @param        ...           a set of key=value pairs for appending as fields
+#'   to the current `Node`.
+#'
+#' @export
+#'
 update_node.Node <- function(x, ...) {
   dots <- list(...)
   if ("children" %in% names(dots)) {
