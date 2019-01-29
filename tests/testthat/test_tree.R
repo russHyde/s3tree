@@ -108,57 +108,6 @@ test_that(".. it updates a parent's data when adding a child node", {
   )
 })
 
-# a function can be `map`ped across the nodes in a tree, returning
-# - a named list if `.field = NULL`
-# or another tree if `.field = "some_field_name"`
-
-test_that(".. it's nodes can be mapped over", {
-  t1 <- tree() %>%
-    add_node(node(name = "root")) %>%
-    add_node(node(name = "a", parent = "root")) %>%
-    add_node(node(name = "b", parent = "a")) %>%
-    add_node(node(name = "c", parent = "root"))
-
-  t2 <- tree() %>%
-    add_node(node(name = "root", alt_parent = NULL)) %>%
-    add_node(node(name = "a", parent = "root", alt_parent = "root")) %>%
-    add_node(node(name = "b", parent = "a", alt_parent = "a")) %>%
-    add_node(node(name = "c", parent = "root", alt_parent = "root"))
-
-  t3 <- tree() %>%
-    add_node(node(name = "root", n_siblings = 1)) %>%
-    add_node(node(name = "a", parent = "root", n_siblings = 2)) %>%
-    add_node(node(name = "b", parent = "a", n_siblings = 1)) %>%
-    add_node(node(name = "c", parent = "root", n_siblings = 2))
-
-  expect_equal(
-    map_tree(t1, parent_name),
-    list(root = NULL, a = "root", b = "a", c = "root"),
-    info = "map over the nodes of a tree: returning a list"
-  )
-
-  expect_equal(
-    map_tree(t1, parent_name, .field = "alt_parent"),
-    t2,
-    info = "if .field is set, mapping over a tree returns an updated tree"
-   )
-
-  count_siblings <- function(node, tree) {
-    n_siblings <- if(has_parent(node)){
-      parent <- nodes(tree)[[parent_name(node)]]
-      length(parent$children)
-    } else {
-      1
-    }
-    n_siblings
-  }
-  expect_equal(
-    map_tree(t1, count_siblings),
-    list(root = 1, a = 2, b = 1, c = 2),
-    info = "map over nodes, using info that can't be got from the node alone"
-  )
-})
-
 test_that(".. it can extract a `Node` by name", {
   t0 <- tree()
   root <- node(name = "root")
