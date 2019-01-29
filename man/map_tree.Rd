@@ -18,11 +18,28 @@ map_tree(.x, .f, ..., .field = NULL)
 passed in as the `tree` argument automatically.}
 
 \item{.field}{If a string is provided, the values of `.f` will
-be appended to the respective `Node`s in the `Tree`; .field gives the name
-of the field where this result is stored. If .field is NULL (as default)
-a named list of the results will be returned (names being the name of the
-relevant `Node`).}
+be appended to the respective `Node`s in the `Tree`; `.field` gives the
+name of the field where this result is stored. If `.field` is `NULL` (as
+default) a named `list` of the results will be returned (names being the
+name of the relevant `Node`).}
 }
 \description{
-Map a function over the `Node`s in a `Tree`
+This function allows you to map a function over the nodes in a tree. If the
+argument `.field` is `NULL`, a list of results is returned, otherwise, the
+results for a given node is added to a field of that name.
+}
+\details{
+If the function `.f` has an argument named `tree`, then `.f` can use details
+of the whole tree when evaluating the result for a given node. For example,
+when evaluating a given node, you can extract values from it's parent or
+children.
+
+The tree is evaluated top-down, so children are evaluated after their
+parents.
+
+If `.field` is non-`NULL`, then the tree is modified as each node is
+evaluated. This means you can use the computed value for a parent when
+evaluating for a child.
+
+The tree is not currently modified when `.field` is non-null.
 }
