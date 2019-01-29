@@ -8,6 +8,8 @@ get_node(x, ...)
 }
 \arguments{
 \item{x}{A `Tree`}
+
+\item{...}{Other arguments.}
 }
 \description{
 Get a `Node` using it's name from a `Tree`

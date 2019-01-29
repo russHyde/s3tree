@@ -59,6 +59,7 @@ is_empty.Tree <- function(x, ...) {
 #' Get a `Node` using it's name from a `Tree`
 #'
 #' @param        x             A `Tree`
+#' @param        ...           Other arguments.
 #'
 #' @export
 #'
@@ -68,8 +69,9 @@ get_node <- function(x, ...) {
 
 #' Get a `Node` using it's name from a `Tree`
 #'
-#' @param        x             A `Tree`
+#' @param        x             A `Tree`.
 #' @param        node_name     The name of a `Node` within the `Tree`.
+#' @param        ...           Other arguments: unused at present.
 #'
 #' @export
 #'

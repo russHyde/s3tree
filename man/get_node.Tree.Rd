@@ -7,9 +7,11 @@
 \method{get_node}{Tree}(x, node_name, ...)
 }
 \arguments{
-\item{x}{A `Tree`}
+\item{x}{A `Tree`.}
 
 \item{node_name}{The name of a `Node` within the `Tree`.}
+
+\item{...}{Other arguments: unused at present.}
 }
 \description{
 Get a `Node` using it's name from a `Tree`
