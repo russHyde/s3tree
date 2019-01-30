@@ -10,12 +10,12 @@ map_tree(.x, .f, ..., .field = NULL)
 \item{.x}{The `Tree`}
 
 \item{.f}{The function to be applied to the `Node`s in the
-`Tree`. If .f has an argument called `tree` then `map_tree` will pass the
+`Tree`. If .f has an argument called `.tree` then `map_tree` will pass the
 `Tree` `.x` in as that argument automatically.}
 
 \item{...}{Further arguments to be passed into the function
-`.f`. Except: if the function `.f` takes an argument `tree`, then `.x` is
-passed in as the `tree` argument automatically.}
+`.f`. Except: if the function `.f` takes an argument `.tree`, then `.x` is
+passed in as the `.tree` argument automatically.}
 
 \item{.field}{If a string is provided, the values of `.f` will
 be appended to the respective `Node`s in the `Tree`; `.field` gives the
