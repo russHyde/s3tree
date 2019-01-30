@@ -39,9 +39,9 @@ test_that("The `Node`s in a `Tree` can be mapped over", {
 })
 
 test_that(".. the `map` function can use pre-existing values in the `Tree`", {
-  count_siblings <- function(node, tree) {
+  count_siblings <- function(node, .tree) {
     n_siblings <- if (has_parent(node)) {
-      parent <- get_parent(tree, node)
+      parent <- get_parent(.tree, node)
       length(parent$children)
     } else {
       1
@@ -62,9 +62,9 @@ test_that(".. the `map` function can use pre-existing values in the `Tree`", {
 test_that(".. `map` results for `Node`s can be used by their children", {
   # update the field "name_sum" as you traverse down the `Tree`
 
-  name_sum <- function(node, tree) {
+  name_sum <- function(node, .tree) {
     if (has_parent(node)) {
-      nchar(node$name) + get_parent(tree, node)$name_sum
+      nchar(node$name) + get_parent(.tree, node)$name_sum
     } else {
       nchar(node$name)
     }

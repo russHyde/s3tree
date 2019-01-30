@@ -20,7 +20,7 @@
 #'
 #' @param        .x            The `Tree`
 #' @param        .f            The function to be applied to the `Node`s in the
-#'   `Tree`. If .f has an argument called `tree` then `map_tree` will pass the
+#'   `Tree`. If .f has an argument called `.tree` then `map_tree` will pass the
 #'   `Tree` `.x` in as that argument automatically.
 #' @param        .field        If a string is provided, the values of `.f` will
 #'   be appended to the respective `Node`s in the `Tree`; `.field` gives the
@@ -28,18 +28,18 @@
 #'   default) a named `list` of the results will be returned (names being the
 #'   name of the relevant `Node`).
 #' @param        ...           Further arguments to be passed into the function
-#'   `.f`. Except: if the function `.f` takes an argument `tree`, then `.x` is
-#'   passed in as the `tree` argument automatically.
+#'   `.f`. Except: if the function `.f` takes an argument `.tree`, then `.x` is
+#'   passed in as the `.tree` argument automatically.
 #'
 #' @export
 #'
 map_tree <- function(.x, .f, ..., .field = NULL) {
-  tree_required_by_f <- "tree" %in% methods::formalArgs(.f)
-  tree_in_args <- "tree" %in% names(list(...))
+  tree_required_by_f <- ".tree" %in% methods::formalArgs(.f)
+  tree_in_args <- ".tree" %in% names(list(...))
 
   if (tree_required_by_f && !tree_in_args) {
     return(
-      map_tree(.x, .f, tree = .x, ..., .field = .field)
+      map_tree(.x, .f, .tree = .x, ..., .field = .field)
     )
   }
 
@@ -49,19 +49,24 @@ map_tree <- function(.x, .f, ..., .field = NULL) {
     )
   }
 
-  for (node in nodes(.x)) {
+  for (.node in nodes(.x)) {
     func_args <- if (tree_required_by_f) {
       # The tree gets updated as the function is applied to the nodes,
       # By passing the updated tree into the function .f, results for children
       #   can depend on the results for their parents
-      append(list(node, tree = .x), within(list(...), rm(tree)))
+      dot_args <- list(...)
+      dot_args[[".tree"]] <- NULL
+      append(
+        list(.node, .tree = .x),
+        dot_args
+      )
     } else {
-      list(node, ...)
+      list(.node, ...)
     }
     result <- do.call(.f, func_args)
-    .x$nodes[[node$name]] <- do.call(
+    .x$nodes[[.node$name]] <- do.call(
       "update_node",
-      list(node, result) %>% stats::setNames(c("x", .field))
+      list(.node, result) %>% stats::setNames(c("x", .field))
     )
   }
   .x
